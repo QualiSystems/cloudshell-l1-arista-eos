@@ -17,10 +17,10 @@ class AristaL1ResourceConfig:
         self.address = address
         self.user = user
         self.password = password
-        self.enable_password = "arista"
         self.sessions_concurrency_limit = 1
         self._runtime_config = runtime_config
         cli_connection_type = runtime_config.read_key("CLI.TYPE", True)
+        self.enable_password = runtime_config.read_key("CLI.ENABLE_PASSWORD", "arista")
         cli_tcp_port = runtime_config.read_key("CLI.PORTS", True)
         if len(cli_connection_type) > 1:
             self.cli_connection_type = "Auto"
@@ -248,7 +248,7 @@ class DriverCommands(DriverCommandsInterface):
     def _get_serial_number(self, session):
         serial_number = session.send_command("show version | grep Serial",
                                              remove_prompt=True)
-        result = re.sub("serial\s+number\s+|\n$", "", serial_number, flags=(
+        result = re.sub(r"serial\s+number\s+|\n$", "", serial_number, flags=(
             re.IGNORECASE))
         return str(result)
 
@@ -260,7 +260,7 @@ class DriverCommands(DriverCommandsInterface):
     def _get_os_version(self, session):
         os_version = session.send_command("show version | grep 'System version'",
                                           remove_prompt=True)
-        result = re.sub("system\s+version\s+|\n$", "", os_version, flags=(
+        result = re.sub(r"system\s+version\s+|\n$", "", os_version, flags=(
             re.IGNORECASE))
         return str(result)
 
@@ -298,12 +298,12 @@ class DriverCommands(DriverCommandsInterface):
         for port in ports:
             with self.cli.config_mode_service() as session:
                 src_port = self._convert_port_address(port)
-                dst_port = self._get_bidi_mappings(session).get("src_port")
+                dst_port = self._get_mappings(session).get("src_port")
                 self._remove_bidi_mapping(session, src_port, dst_port)
                 self._remove_bidi_mapping(session, dst_port, src_port)
                 self._disable_port(session, src_port)
                 self._disable_port(session, dst_port)
-                dst_port = self._get_tap_mappings(session).get("src_port")
+                dst_port = self._get_mappings(session).get("src_port")
                 self._disable_port(session, dst_port)
 
     def map_clear_to(self, src_port, dst_ports):
@@ -402,34 +402,3 @@ class DriverCommands(DriverCommandsInterface):
         :return:
         """
         return port.split("/")[-1].replace("-", "/")
-
-
-if __name__ == "__main__":
-    import logging
-    from cloudshell.logging.qs_logger import get_qs_logger
-    from unittest.mock import Mock
-    ip = "192.168.105.28"
-    _logger = get_qs_logger()
-    _runtime_config_instance = Mock()
-    _runtime_config_instance.read_key.side_effect = [["SSH", "TELNET"], {"SSH": 22,
-                                                                         "TELNET": 23}]
-    driver = DriverCommands(_logger, _runtime_config_instance)
-    driver.login(ip, "admin", "admin")
-    response = driver.get_resource_description(ip)
-    # result = driver.map_clear_to('192.168.23.10/ethernet30-3',
-    #                              ['192.168.23.10/ethernet31-3'])
-    response = driver.map_bidi(f'{ip}/ethernet3',
-                               f'{ip}/ethernet4')
-    result1 = driver.map_clear_to(f'{ip}/ethernet3',
-                                  [f'{ip}/ethernet4'])
-    # result2 = driver.map_clear_to('192.168.23.10/ethernet30-1',
-    #                               ['192.168.23.10/ethernet31-1',
-    #                                '192.168.23.10/ethernet31-2'])
-    # response1 = driver.map_uni('192.168.23.10/ethernet30-1',
-    #                            ['192.168.23.10/ethernet31-1',
-    #                             '192.168.23.10/ethernet31-2'])
-    # result3 = driver.map_clear_to('192.168.23.10/ethernet30-1',
-    #                               ['192.168.23.10/ethernet31-1',
-    #                                '192.168.23.10/ethernet31-2']
-    #                               )
-    print("!")

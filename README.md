@@ -1,9 +1,9 @@
 
 ![](cloudshell_logo.png)
 
-# **Cloudshell Cisco Nexus L1 Shell**
+# **Cloudshell Arista EOS L1 Shell**
 
-Release date: July 2022 
+Release date: May 2023 
 
 Shell version: 1.0.0
 
@@ -29,22 +29,22 @@ L1 switch shells allow CloudShell to manage networking connectivity between phys
 
 For additional information, see the [L1 Switches](http://help.quali.com/Online%20Help/9.0/Portal/Content/Admn/Cnct-Ctrl-L1-Swch.htm?Highlight=L1%20switch) online help topic.
 
-### **Cloudshell L1 Cisco Nexus L1 Shell**
-The Cloudshell L1 Cisco Nexus L1 shell provides you with the capability to communicate with network topology managed by the Cloudshell L1 Cisco Nexus switch.
+### **Cloudshell L1 Arista EOS L1 Shell**
+The Cloudshell L1 Arista EOS L1 shell provides you with the capability to communicate with network topology managed by the Cloudshell L1 Arista EOS switch.
 
 The shell allows CloudShell users to interact with the device, for example, create and modify route mappings, get device information, and more.
 
-For more information on the **Cloudshell L1 Cisco Nexus**, see the official **[Device Manufacturer]** product documentation.
+For more information on the **Cloudshell L1 Arista EOS**, see the official **[Device Manufacturer]** product documentation.
 
 ### Standard version
-The Cloudshell L1 Cisco Nexus L1 shell is based on the [**Layer 1 Switch Shell Standard**](https://github.com/QualiSystems/shell-L1-template).
+The Cloudshell L1 Arista EOS L1 shell is based on the [**Layer 1 Switch Shell Standard**](https://github.com/QualiSystems/shell-L1-template).
 
 ### Supported OS
 ▪ [OS Name]
 
 ### Requirements
 
-Release: **Cloudshell L1 Cisco Nexus L1 Shell**
+Release: **Cloudshell L1 Arista EOS L1 Shell**
 
 ▪ CloudShell version: 8.0 and above
 
@@ -54,19 +54,19 @@ Release: **Cloudshell L1 Cisco Nexus L1 Shell**
 
 The shell's data model includes all shell metadata, families, and attributes.
 
-#### **Cloudshell L1 Cisco Nexus Families and Models**
+#### **Cloudshell L1 Arista EOS Families and Models**
 
 The L1 switch families and models are listed in the following table:
 
 |Family|Model|Description|
 |:---|:---|:---|
-|L1 Switch|Cloudshell L1 Cisco Nexus Chassis|L1 Switch Chassis|
+|L1 Switch|Cloudshell L1 Arista EOS Chassis|L1 Switch Chassis|
 |L1 Switch Blade|Generic L1 Module|Generic L1 Module|
 |L1 Switch Port|Generic L1 Port|Generic L1 Port|
 
-#### **Cloudshell L1 Cisco Nexus Attributes**
+#### **Cloudshell L1 Arista EOS Attributes**
 
-The Cloudshell L1 Cisco Nexus Chassis attribute names and types are listed in the following table:
+The Cloudshell L1 Arista EOS Chassis attribute names and types are listed in the following table:
 
 |Attribute|Type|Description|
 |:---|:---|:---|
@@ -112,16 +112,16 @@ This section describes the automation (drivers) associated with the data model. 
 **Note:** You can only activate a TAP connection after activating a parent MapUni/MapBidi connection. 
 
 # Downloading the Shell
-The **Cloudshell L1 Cisco Nexus** L1 shell is available from the [Quali Community Integrations](https://community.quali.com/integrations) page. 
+The **Cloudshell L1 Arista EOS** L1 shell is available from the [Quali Community Integrations](https://community.quali.com/integrations) page. 
 
 The shell comprises:
 
 |File name|Description|
 |:---|:---|
-|cloudshell-L1-cloudshell_l1_cisco_nexus-x.x.x.zip|Cloudshell L1 Cisco Nexus L1 shell package|
-|install_driver.bat|Cloudshell L1 Cisco Nexus L1 shell installation script|
-|cloudshell_l1_cisco_nexus_runtime_config.yml|Cloudshell L1 Cisco Nexus L1 shell configuration file|
-|cloudshell_l1_cisco_nexus_ResourceConfiguration.xml|XML file containing the resource structure, attributes and capabilities of the L1 switches of the same vendor|
+|cloudshell-L1-cloudshell_l1_arista_eos-x.x.x.zip|Cloudshell L1 Arista EOS L1 shell package|
+|install_driver.bat|Cloudshell L1 Arista EOS L1 shell installation script|
+|cloudshell_l1_arista_eos_runtime_config.yml|Cloudshell L1 Arista EOS L1 shell configuration file|
+|cloudshell_l1_arista_eos_ResourceConfiguration.xml|XML file containing the resource structure, attributes and capabilities of the L1 switches of the same vendor|
 
 # Importing and Configuring the Shell
 This section describes how to import the L1 shell and configure and modify the shell’s devices.
@@ -131,21 +131,21 @@ This section describes how to import the L1 shell and configure and modify the s
 **To import and configure the shell in CloudShell:**
   1. Make sure you have the shell’s zip package. If not, download the shell from the [Quali Community's Integrations](https://community.quali.com/integrations) page.
   
-  2. Extract the *Cloudshell L1 Cisco Nexus L1 shell zip* package to the following location on the Quali Server machine: 
+  2. Extract the *Cloudshell L1 Arista EOS L1 shell zip* package to the following location on the Quali Server machine: 
   *C:\Program Files (x86)\QualiSystems\CloudShell\Server\Drivers*
   
-  3. Run the *C:\Program Files (x86)\QualiSystems\CloudShell\Server\Drivers\cloudshell-L1-cloudshell_l1_cisco_nexus\install_driver.bat* file.
+  3. Run the *C:\Program Files (x86)\QualiSystems\CloudShell\Server\Drivers\cloudshell-L1-cloudshell_l1_arista_eos\install_driver.bat* file.
   
   4. Import the new data model.
       1. In **Resource Manager Client>Admin**, right-click **Resource Families** and select **Import**.
-      2. Select the *C:\Program Files (x86)\QualiSystems\CloudShell\Server\Drivers\cloudshell-L1-cloudshell_l1_cisco_nexus\datamodel\cloudshell_l1_cisco_nexus_ResourceConfiguration.xml* file.
+      2. Select the *C:\Program Files (x86)\QualiSystems\CloudShell\Server\Drivers\cloudshell-L1-cloudshell_l1_arista_eos\datamodel\cloudshell_l1_arista_eos_ResourceConfiguration.xml* file.
       3. Click **Open**.
 	
   5. Create an L1 resource.
       1. In **Resource Explorer**, right-click **Root** and select **New>Resource**.
       2. Enter the **Name** and **Address**.
       3. Select the **L1 Switch** family.
-      4. Ensure that the correct **Model** Cloudshell L1 Cisco Nexus Chassis and **Driver** CLOUDSHELL L1 CISCO NEXUS are selected.
+      4. Ensure that the correct **Model** Cloudshell L1 Arista EOS Chassis and **Driver** CLOUDSHELL L1 Arista EOS are selected.
       5. Click **OK**.
 	
   6. Auto Load the new resource.
@@ -165,7 +165,7 @@ This section describes how to import the L1 shell and configure and modify the s
 ### Offline installation of a shell
 Shell installation installs the required dependencies from the shell's zip package.
 
-The *install_driver.bat* script creates a virtual environment on the Quali Server machine under *C:\Program Files (x86)\QualiSystems\CloudShell\Server\Drivers\cloudshell-L1-cloudshell_l1_cisco_nexus* and installs the required dependencies in this virtual environment from the extracted L1 shell folder (under *~cloudshell-L1-cloudshell_l1_cisco_nexus\packages*).
+The *install_driver.bat* script creates a virtual environment on the Quali Server machine under *C:\Program Files (x86)\QualiSystems\CloudShell\Server\Drivers\cloudshell-L1-cloudshell_l1_arista_eos* and installs the required dependencies in this virtual environment from the extracted L1 shell folder (under *~cloudshell-L1-cloudshell_l1_arista_eos\packages*).
 
 # Updating Python Dependencies for Shells
 This section explains how to update your Python dependencies folder. This is required when you upgrade a shell that uses new/updated dependencies. It applies to both online and offline dependencies. 
@@ -187,7 +187,7 @@ L1 shells do not have separate Python dependencies files. All dependencies are i
 
 5. Copy the upgraded shell's datamodel file from:
 
-	*C:\Program Files (x86)\QualiSystems\CloudShell\Server\Drivers\cloudshell-L1-cloudshell_l1_cisco_nexus\datamodel\cloudshell_l1_cisco_nexus_ResourceConfiguration.xml*
+	*C:\Program Files (x86)\QualiSystems\CloudShell\Server\Drivers\cloudshell-L1-cloudshell_l1_arista_eos\datamodel\cloudshell_l1_arista_eos_ResourceConfiguration.xml*
 	
 	to:
 	
@@ -213,4 +213,4 @@ To connect with Quali users and experts from around the world, ask questions and
 
 ### What's New
 
-For release updates, see the shell's [GitHub releases page](https://github.com/QualiSystems/cloudshell-L1-cloudshell_l1_cisco_nexus/releases).
+For release updates, see the shell's [GitHub releases page](https://github.com/QualiSystems/cloudshell-L1-cloudshell_l1_arista_eos/releases).
