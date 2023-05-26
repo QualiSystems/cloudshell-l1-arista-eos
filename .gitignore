@@ -90,8 +90,6 @@ ENV/
 # Pycharm project settings
 .idea
 
-
-.DS_Store
-
 packages/
 
+.DS_Store

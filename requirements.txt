@@ -1,4 +1,3 @@
 cloudshell-cli~=5.0
 cloudshell-l1-networking-core~=2.0
 cloudshell-logging~=2.1
-cloudshell-networking-arista>=6.0,<7.0
