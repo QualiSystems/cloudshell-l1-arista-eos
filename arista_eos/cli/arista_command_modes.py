@@ -5,7 +5,7 @@ import time
 
 from cloudshell.cli.service.command_mode import CommandMode
 
-#ToDo
+# ToDo
 ENABLE_PASSWORD = "arista"
 
 
@@ -30,9 +30,8 @@ class AristaEnableCommandMode(CommandMode):
         r"((?!\(config.*?\))(\w|\.|-|:|\(|\)))*"  # any \w,.,-,(), without (config)
         r"#\s*$"
     )
-    # PROMPT = "Arista.vEOS#"
     ENTER_COMMAND = "enable"
-    EXIT_COMMAND = ""
+    EXIT_COMMAND = "exit"
 
     def __init__(self):
         """Initialize Enable command mode - default command mode for Arista Shells."""
@@ -55,7 +54,8 @@ class AristaEnableCommandMode(CommandMode):
 class AristaConfigCommandMode(CommandMode):
     MAX_ENTER_CONFIG_MODE_RETRIES = 5
     ENTER_CONFIG_RETRY_TIMEOUT = 5
-    PROMPT = r"\(config.*\)#\s*$"
+    # PROMPT = r"\(config.*\)#\s*$"  # noqa E800
+    PROMPT = r"\(config\)#\s*$"
     ENTER_COMMAND = "configure terminal"
     EXIT_COMMAND = "end"
 
@@ -97,6 +97,58 @@ class AristaConfigCommandMode(CommandMode):
         session.send_line("", logger)
 
 
+class AristaConfigPatchCommandMode(CommandMode):
+    MAX_ENTER_CONFIG_MODE_RETRIES = 5
+    ENTER_CONFIG_RETRY_TIMEOUT = 5
+    # PROMPT = r"\(config.*\)#\s*$"  # noqa E800
+    PROMPT = r"\(config-patch.*\)#\s*$"
+    ENTER_COMMAND = "patch panel"
+    EXIT_COMMAND = "exit"
+
+    def __init__(self):
+        """Initialize Config command mode."""
+        CommandMode.__init__(
+            self,
+            AristaConfigPatchCommandMode.PROMPT,
+            AristaConfigPatchCommandMode.ENTER_COMMAND,
+            AristaConfigPatchCommandMode.EXIT_COMMAND,
+            enter_action_map=self.enter_action_map(),
+        )
+
+    def enter_action_map(self):
+        return {rf"{AristaEnableCommandMode.PROMPT}.*$": self._check_config_mode}
+
+    def _check_config_mode(self, session, logger):
+        error_message = (
+            "Failed to enter config patch mode," "please check logs, for details"
+        )
+        conf_prompt = AristaConfigPatchCommandMode.PROMPT
+        enable_prompt = AristaConfigCommandMode.PROMPT
+
+        retry = 0
+        output = session.hardware_expect("", f"{conf_prompt}|{enable_prompt}", logger)
+        while (
+            not re.search(conf_prompt, output)
+            and retry < self.MAX_ENTER_CONFIG_MODE_RETRIES
+        ):
+            time.sleep(self.ENTER_CONFIG_RETRY_TIMEOUT)
+            output = session.hardware_expect(
+                AristaConfigPatchCommandMode.ENTER_COMMAND,
+                f"{enable_prompt}|{conf_prompt}",
+                logger,
+            )
+            retry += 1
+
+        if not re.search(conf_prompt, output):
+            raise Exception(error_message)
+
+        session.send_line("", logger)
+
+
 CommandMode.RELATIONS_DICT = {
-    AristaDefaultCommandMode: {AristaEnableCommandMode: {AristaConfigCommandMode: {}}}
+    AristaDefaultCommandMode: {
+        AristaEnableCommandMode: {
+            AristaConfigCommandMode: {AristaConfigPatchCommandMode: {}}
+        }
+    }
 }

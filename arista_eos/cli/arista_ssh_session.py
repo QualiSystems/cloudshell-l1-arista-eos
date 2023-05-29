@@ -1,11 +1,11 @@
-from cloudshell.cli.session.ssh_session import SSHSession
 from cloudshell.cli.service.cli_service_impl import CliServiceImpl
 from cloudshell.cli.service.command_mode_helper import CommandModeHelper
+from cloudshell.cli.session.ssh_session import SSHSession
 
 from arista_eos.cli.arista_command_modes import (
+    AristaConfigCommandMode,
     AristaDefaultCommandMode,
     AristaEnableCommandMode,
-    AristaConfigCommandMode
 )
 
 

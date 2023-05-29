@@ -59,4 +59,4 @@ class Main:
 
 
 if __name__ == "__main__":
-    Main(*sys.argv).run_driver("arista-eos")
+    Main(*sys.argv).run_driver("arista_eos")

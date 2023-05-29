@@ -101,7 +101,7 @@ class DriverCommands(DriverCommandsInterface):
             ports = {}
             for port_id, port_data in ports_info.items():
                 port = AristaPort(resource_id=port_id)
-                port.set_port_speed(port_data.get("speed"))
+                port.set_port_speed(str(port_data.get("speed")))
                 port.set_auto_negotiation(port_data.get("autoneg"))
                 port.set_duplex(port_data.get("duplex"))
                 port.set_parent_resource(chassis)
@@ -129,14 +129,18 @@ class DriverCommands(DriverCommandsInterface):
 
     def map_bidi(self, src_port: str, dst_port: str):
         """Create a bidirectional connection between source and destination ports."""
+        logger.debug(
+            f"Try to create bi-directional connection:"
+            f"SRC - {src_port}, DST - {dst_port}"
+        )
         src_port = src_port.replace("-", "/")
         dst_port = dst_port.replace("-", "/")
 
         with self._cli_handler.get_cli_service(
-            self._cli_handler.config_mode
-        ) as config_session:
+            self._cli_handler.config_patch_mode
+        ) as patch_session:
 
-            mapping_actions = MappingActions(config_session)
+            mapping_actions = MappingActions(patch_session)
             mapping_actions.create_mapping(
                 src_port=self._convert_port_address(src_port),
                 dst_port=self._convert_port_address(dst_port),
@@ -152,13 +156,17 @@ class DriverCommands(DriverCommandsInterface):
                         )
         """
         with self._cli_handler.get_cli_service(
-            self._cli_handler.config_mode
-        ) as config_session:
+            self._cli_handler.config_patch_mode
+        ) as patch_session:
 
-            mapping_actions = MappingActions(config_session)
+            mapping_actions = MappingActions(patch_session)
             src_port = src_port.replace("-", "/")
             for dst_port in dst_ports:
                 dst_port = dst_port.replace("-", "/")
+                logger.debug(
+                    f"Try to create TAP-connection:"
+                    f"SRC - {src_port}, DST - {dst_port}"
+                )
                 mapping_actions.create_mapping(
                     src_port=self._convert_port_address(src_port),
                     dst_port=self._convert_port_address(dst_port),
@@ -167,6 +175,9 @@ class DriverCommands(DriverCommandsInterface):
 
     def map_clear_to(self, src_port: str, dst_ports: list[str]):
         """Remove simplex/multicast/duplex connection ending on the dst port."""
+        logger.debug(
+            f"Try to remove connections:" f"SRC - {src_port}, DST ports - {dst_ports}"
+        )
         dst_ports.append(src_port)
         self.map_clear(dst_ports)
 
@@ -175,16 +186,15 @@ class DriverCommands(DriverCommandsInterface):
 
         ports - ["192.168.42.240/1/21", "192.168.42.240/1/22"]
         """
+        logger.debug(f"Try to remove connections for ports: {ports}")
+
         with self._cli_handler.get_cli_service(
             self._cli_handler.enable_mode
         ) as enable_session:
             autoload_actions = AutoloadActions(enable_session)
             connections_info = autoload_actions.get_connections()
 
-        with self._cli_handler.get_cli_service(
-            self._cli_handler.config_mode
-        ) as config_session:
-            mapping_actions = MappingActions(config_session)
+        if connections_info:  # Check if any connection exists
             full_patch_names = set()
             for port in ports:
                 port = self._convert_port_address(port).replace("-", "/")
@@ -193,7 +203,12 @@ class DriverCommands(DriverCommandsInterface):
                 )
                 full_patch_names.update(patch_names)
 
-            mapping_actions.remove_mapping(full_patch_names)
+            if full_patch_names:  # Check if connections for provided ports exists
+                with self._cli_handler.get_cli_service(
+                    self._cli_handler.config_patch_mode
+                ) as patch_session:
+                    mapping_actions = MappingActions(patch_session)
+                    mapping_actions.remove_mapping(full_patch_names)
 
     def get_state_id(self) -> GetStateIdResponseInfo:
         """Check if CS synchronized with the device."""
@@ -249,7 +264,9 @@ class DriverCommands(DriverCommandsInterface):
         """
         return port.split("/", 1)[-1]
 
-    def _get_patch_name(self, port: str, connections_info: dict = None) -> set[str]:
+    def _get_patch_name(
+        self, port: str, connections_info: dict[str, list[str]] = None
+    ) -> set[str]:
         """Get all patch names for provided port."""
         patch_names = set()
         port = f"{MappingActions.INTERFACE_TYPE}{port.replace('-', '/')}"

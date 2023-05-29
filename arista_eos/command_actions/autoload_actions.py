@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import re
 import json
+import re
 
 from cloudshell.cli.command_template.command_template_executor import (
     CommandTemplateExecutor,
@@ -16,7 +16,10 @@ logger = get_l1_logger(name=__name__)
 
 
 def convert_output(raw_output: str) -> dict:
-    """"""
+    """Clear raw output.
+
+    There is not zero chance to get dirty output that can not be converted to JSON
+    """
     match = re.search(r".*?(?P<output>{.*}).*", raw_output, re.DOTALL)
     if not match:
         logger.debug(f"Can not parse command output. Raw output: {raw_output}")
@@ -45,13 +48,14 @@ class AutoloadActions:
 
         return convert_output(raw_output=raw_output)
 
-    def get_ports(self) -> dict:
+    def get_ports(self) -> dict[str, dict[str, str]]:
         """Get ports with details."""
         raw_output = CommandTemplateExecutor(
             self._cli_service, command_template.SHOW_PORTS
         ).execute_command()
 
         output = convert_output(raw_output=raw_output)
+        logger.debug(f"Ports JSON output: {output}")
 
         res = {}
         interfaces = output.get("interfaces", {})
@@ -70,18 +74,20 @@ class AutoloadActions:
                 "mac": if_data.get("physicalAddress"),
                 "autoneg": if_data.get("autoNegotiate"),
                 "duplex": if_data.get("duplex"),
-                "speed": if_data.get("bandwidth")
+                "speed": if_data.get("bandwidth"),
             }
 
+        logger.debug(f"Existed ports: {res}")
         return res
 
-    def get_connections(self) -> dict:
+    def get_connections(self) -> dict[str, list[str]]:
         """Get existed connections."""
         raw_output = CommandTemplateExecutor(
             self._cli_service, command_template.SHOW_CONNECTIONS
         ).execute_command()
 
         output = convert_output(raw_output=raw_output)
+        logger.debug(f"Connections JSON output: {output}")
 
         res = {}
         patches = output.get("patches", {})
@@ -93,4 +99,5 @@ class AutoloadActions:
 
             res[patch_name] = ifaces
 
+        logger.debug(f"Existed connections: {res}")
         return res
