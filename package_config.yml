@@ -7,7 +7,7 @@ PACKAGE_FILES:               # Files will be added to the driver's package zip
   - requirements.txt
   - version.txt
   - INSTALL.txt
-  - netscout_teststream_runtime_config.yml
+  - arista_eos_runtime_config.yml
   - package_config.yml
 #  - test_requirements.txt
 #  - tests
