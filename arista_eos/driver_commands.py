@@ -31,7 +31,7 @@ class DriverCommands(DriverCommandsInterface):
 
     def __init__(self, runtime_config: RuntimeConfiguration):
         self._runtime_config = runtime_config
-        self._cli_handler = AristaCliHandler()
+        self._cli_handler = AristaCliHandler(runtime_config)
         self.__device_info = None
 
     def _device_info(self, session):

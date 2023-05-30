@@ -16,15 +16,15 @@ logger = get_l1_logger(name=__name__)
 
 
 class L1CliHandler:
-    def __init__(self):
+    def __init__(self, runtime_config):
         self._cli = CLI(session_pool=SessionPoolManager(max_pool_size=1))
         self._defined_session_types = {"SSH": SSHSession, "TELNET": TelnetSession}
 
         self._session_types = (
-            RuntimeConfiguration().read_key("CLI.TYPE")
+            runtime_config.read_key("CLI.TYPE")
             or self._defined_session_types.keys()
         )
-        self._ports = RuntimeConfiguration().read_key("CLI.PORTS")
+        self._ports = runtime_config.read_key("CLI.PORTS")
 
         self._host = None
         self._username = None

@@ -13,7 +13,7 @@ class AristaSSHSession(SSHSession):
     def _connect_actions(self, prompt, logger):
         self.hardware_expect(
             None,
-            expected_string=AristaDefaultCommandMode.PROMPT,
+            expected_string=prompt,
             timeout=self._timeout,
             logger=logger,
         )

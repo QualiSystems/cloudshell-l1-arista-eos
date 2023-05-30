@@ -14,8 +14,8 @@ from arista_eos.cli.l1_cli_handler import L1CliHandler
 
 
 class AristaCliHandler(L1CliHandler):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, runtime_config):
+        super().__init__(runtime_config)
         self.modes = CommandModeHelper.create_command_mode()
         self._defined_session_types = {
             "SSH": AristaSSHSession,
