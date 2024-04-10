@@ -17,7 +17,9 @@ on:
 jobs:
   tests:
     name: Run unit tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
+    container:
+      image: python:2.7.18-buster
     strategy:
       matrix:
         python-version: [2.7]
@@ -48,7 +50,9 @@ jobs:
           verbose: true
   pre-commit:
     name: Run pre-commit
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
+    container:
+      image: python:2.7.18-buster
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -68,7 +72,9 @@ jobs:
     name: Check version
     # only for PRs in master
     if: ${{ github.base_ref == 'master' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
+    container:
+      image: python:2.7.18-buster
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -81,7 +87,9 @@ jobs:
   create-gh-release:
     needs: [ tests, pre-commit ]
     if: ${{ github.ref == 'refs/heads/master' && github.event_name == 'push' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
+    container:
+      image: python:2.7.18-buster
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
