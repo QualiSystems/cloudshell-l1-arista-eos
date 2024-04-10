@@ -24,9 +24,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Enable Python2
+        run: sudo ln -sf /usr/bin/python2.7 /usr/bin/python
       - name: Install dependencies
         run: |
-          sudo ln -sf /usr/bin/python2.7 /usr/bin/python
           python -m pip install pip -U
           pip install tox codecov
       - name: Set TOXENV
