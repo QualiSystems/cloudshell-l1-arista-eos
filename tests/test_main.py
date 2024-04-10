@@ -79,6 +79,8 @@ class TestMain(TestCase):
         time = "test_time"
         time_inst.strftime.return_value = time
         command_logger = Mock()
+        command_handler = Mock()
+        command_logger.handlers = [command_handler]
         get_qs_logger_mod.return_value = command_logger
 
         driver_commands_inst = Mock()
@@ -110,7 +112,7 @@ class TestMain(TestCase):
         runtime_config_instance.read_key.assert_called_once_with(
             "LOGGING.LEVEL", "INFO"
         )
-        command_logger.setLevel.assert_called_once_with(log_level)
+        command_handler.setLevel.assert_called_once_with(log_level)
         importlib_mod.import_module.assert_called_once_with(
             f"{driver_name}.driver_commands", package=None
         )
