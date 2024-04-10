@@ -4,7 +4,6 @@ from cloudshell.cli.session.ssh_session import SSHSession
 
 from arista_eos.cli.arista_command_modes import (
     AristaConfigCommandMode,
-    AristaDefaultCommandMode,
     AristaEnableCommandMode,
 )
 
