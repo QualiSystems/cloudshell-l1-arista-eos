@@ -20,18 +20,18 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        python-version: [2.7]
+        python-version: [3.9]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Enable Python2
-        run: sudo ln -sf /usr/bin/python2.7 /usr/bin/python
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
       - name: Install dependencies
         run: |
-          curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py
-          python get-pip.py
           python -m pip install pip -U
-          python -m pip install tox codecov
+          pip install tox
       - name: Set TOXENV
         run: |
           python_version="${{ matrix.python-version }}"
