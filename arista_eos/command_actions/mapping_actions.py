@@ -23,11 +23,13 @@ class MappingActions:
 
     def create_mapping(self, src_port: str, dst_port: str, is_tap: bool = False):
         """Create patch panel for Source and Destination Ports."""
+        src_port_dash = src_port.replace("/", "-")
+        dst_port_dash = dst_port.replace("/", "-")
         if is_tap:
-            patch_name = self.TAP_TEMPLATE.format(src=src_port, dst=dst_port)
+            patch_name = self.TAP_TEMPLATE.format(src=src_port_dash, dst=dst_port_dash)
             logger.debug("Try to create TAP Connection.")
         else:
-            patch_name = self.BIDI_TEMPLATE.format(src=src_port, dst=dst_port)
+            patch_name = self.BIDI_TEMPLATE.format(src=src_port_dash, dst=dst_port_dash)
 
         logger.debug(
             f"Try to create connection between ports: "
